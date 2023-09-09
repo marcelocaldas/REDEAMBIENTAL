@@ -19,8 +19,8 @@ if (env('REDIS_CACHE', false)) {
 return [
     'app.cache' => $cache,
     'app.mscache' => $mscache,
-    'app.siteName' => env('SITE_NAME', 'Mapa cultural do Pará'),
-    'app.siteDescription' => i::__("O Mapa cultural do Pará é uma plataforma colaborativa que reúne informações sobre agentes, espaços, eventos, projetos culturais e oportunidades"),
+    'app.siteName' => env('SITE_NAME', 'JP CULTURA'),
+    'app.siteDescription' => i::__("O JP CULTURA é uma plataforma colaborativa que reúne informações sobre agentes, espaços, eventos, projetos culturais e oportunidades"),
 
     'themes.active' => "MapasPA",
 
