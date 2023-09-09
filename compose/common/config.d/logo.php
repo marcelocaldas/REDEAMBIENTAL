@@ -21,7 +21,7 @@ return [
 
     ex: `img/meu-mapa-logo.jpg` (pasta assets/img/meu-mapa-logo.jpg do tema) 
     */
-    'logo.image' => env('LOGO_IMAGE', 'img/logo-Mapas-PA.png'),
+    'logo.image' => env('LOGO_IMAGE', 'img/logo-Mapas-JP.png'),
 
     /* Esconde o título e subtitulo */
     'logo.hideLabel' => env('LOGO_HIDELABEL', false),
