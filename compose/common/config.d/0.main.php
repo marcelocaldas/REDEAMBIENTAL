@@ -20,7 +20,7 @@ return [
     'app.cache' => $cache,
     'app.mscache' => $mscache,
     'app.siteName' => env('SITE_NAME', 'JP CULTURA'),
-    'app.siteDescription' => i::__("O JP CULTURA é uma plataforma colaborativa que reúne informações sobre agentes, espaços, eventos, projetos culturais e oportunidades"),
+    'app.siteDescription' => i::__("A JP CULTURA é uma plataforma colaborativa que reúne informações sobre agentes, espaços, eventos, projetos culturais e oportunidades"),
 
     'themes.active' => "MapasPA",
 
