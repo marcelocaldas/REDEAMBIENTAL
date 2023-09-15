@@ -1,6 +1,6 @@
 # JP CULTURA
 
-Repositório para deploy do JP CULTURA- Copiado e adaptado do Mapa Cultural do Pará
+Repositório para deploy da JP CULTURA- Copiado e adaptado do Mapa Cultural do Pará
 
 ## Estrutura de arquivos
 - **compose**
