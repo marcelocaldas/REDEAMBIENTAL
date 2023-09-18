@@ -8,8 +8,16 @@ networks:
 services:
   web:
     image: hacklab/mapasculturais-nginx:v1.0
+    #image: nginx-latest
     restart: always
     volumes:
+     ##### versão sem ssl
+    #  - ./compose/production/nginx.conf:/etc/nginx/conf.d/default.conf - padrão
+
+  ##### versão com ssl
+    #  - ./compose/production/nginx-ssl.conf:/etc/nginx/conf.d/default.conf - tem que configurar
+    #  - ./docker-data/certs/conf:/etc/letsencrypt não precisa
+    #  - ./docker-data/certs/www:/var/www/certbot não precisa
      - ./docker-data/public-files:/var/www/html/files
      - ./docker-data/assets:/var/www/html/assets
 #    ports:
@@ -21,13 +29,17 @@ services:
       - mapas
     links:
       - mapas
-
+    networks:
+    - proxy-reverso
 
   mapas:
     build:
       context: ./
       dockerfile: compose/production/Dockerfile
     restart: always
+    networks:
+     - proxy-reverso
+    
     ports:
       - "9000:9000"
     volumes:
@@ -51,7 +63,6 @@ services:
       - LETSENCRYPT_EMAIL=marcelocaldasfilho@gmail.com
       - REDIS_CACHE=redis
       - SESSIONS_SAVE_PATH=tcp://redis:6379 
-
 #     - APP_LCODE=pt_BR,es_ES # para selecao do idioma baseado no navegador
       - APP_LCODE=pt_BR
       - APP_MODE=production
