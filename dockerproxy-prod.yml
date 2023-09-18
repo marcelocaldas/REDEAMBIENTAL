@@ -1,4 +1,10 @@
 version: '3'
+networks:
+  proxy-reverso:
+    external: true
+    name: proxy-reverso
+  internal:
+    driver: bridge
 services:
   web:
     image: hacklab/mapasculturais-nginx:v1.0
@@ -6,9 +12,9 @@ services:
     volumes:
      - ./docker-data/public-files:/var/www/html/files
      - ./docker-data/assets:/var/www/html/assets
-    ports:
-     - "80:80"
-     - "443:443"
+#    ports:
+ #    - "80:80"
+ #    - "443:443"
     environment:
      - MAPAS_HOSTNAME=mapas
     depends_on:
@@ -40,17 +46,21 @@ services:
       - DB_PASS=mapas
       - DB_NAME=mapas
       - CACHE_API=false
+      - VIRTUAL_HOST=jpcultura.joaopessoa.pb.gov.br
+      - LETSENCRYPT_HOST=jpcultura.joaopessoa.pb.gov.br
+      - LETSENCRYPT_EMAIL=marcelocaldasfilho@gmail.com
 
 
-#      - APP_LCODE=pt_BR,es_ES # para selecao do idioma baseado no navegador
+#     - APP_LCODE=pt_BR,es_ES # para selecao do idioma baseado no navegador
       - APP_LCODE=pt_BR
       - APP_MODE=production
       - ACTIVE_THEME=MapasPA
       - PENDING_PCACHE_RECREATION_INTERVAL=60
       
     depends_on:
-      - db
-      
+       - db
+    networks:
+      - proxy-reverso
   db:
     image: mdillon/postgis:11
     restart: always
@@ -59,6 +69,8 @@ services:
       - POSTGRES_USER=mapas
       - POSTGRES_DB=mapas
       - POSTGRES_DB_TEST=mapasculturais_test
+    networks:
+      - proxy-reverso  
     ports:
       - "5432:5432"
     volumes:
