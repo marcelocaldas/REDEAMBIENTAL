@@ -49,7 +49,8 @@ services:
       - VIRTUAL_HOST=jpcultura.joaopessoa.pb.gov.br
       - LETSENCRYPT_HOST=jpcultura.joaopessoa.pb.gov.br
       - LETSENCRYPT_EMAIL=marcelocaldasfilho@gmail.com
-
+      - REDIS_CACHE=redis
+      - SESSIONS_SAVE_PATH=tcp://redis:6379 
 
 #     - APP_LCODE=pt_BR,es_ES # para selecao do idioma baseado no navegador
       - APP_LCODE=pt_BR
