@@ -1,0 +1,84 @@
+version: '3'
+  #networks:
+  # proxy-reverso:
+  # external: true
+  # name: proxy-reverso
+  # internal:
+  #  driver: bridge
+
+ services:
+  web:
+    image: hacklab/mapasculturais-nginx:v1.0
+    restart: always
+    volumes:  
+      - ./docker-data/public-files:/var/www/html/files
+      - ./docker-data/assets:/var/www/html/assets
+     ports:
+       - "8080:8080"
+       # - "443:443"
+    environment:
+     - MAPAS_HOSTNAME=mapas
+    depends_on:
+      - mapas
+    links:
+      - mapas
+        #   networks:
+        # - proxy-reverso
+
+  mapas:
+    build:
+      context: ./
+      dockerfile: compose/production/Dockerfile
+    restart: always
+      # networks:
+      #  - proxy-reverso
+
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./docker-data/assets:/var/www/html/assets
+      - ./docker-data/public-files:/var/www/html/files
+      - ./docker-data/private-files:/var/www/private-files
+
+      - ./compose/production/config.d:/var/www/html/protected/application/conf/config.d
+      - ./compose/common/config.d:/var/www/html/protected/application/conf/conf-common.d
+      - ./compose/common/location.php:/var/www/html/protected/application/themes/BaseV1/layouts/parts/singles/location.php
+    links:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=mapas
+      - DB_PASS=mapas
+      - DB_NAME=mapas
+      - CACHE_API=false
+        # - VIRTUAL_HOST=jpcultura.joaopessoa.pb.gov.br
+        #  - LETSENCRYPT_HOST=jpcultura.joaopessoa.pb.gov.br
+        # - LETSENCRYPT_EMAIL=marcelocaldasfilho@gmail.com
+
+#      - APP_LCODE=pt_BR,es_ES # para selecao do idioma baseado no navegador
+      - APP_LCODE=pt_BR
+      - APP_MODE=production
+      - ACTIVE_THEME=MapasPA
+      - PENDING_PCACHE_RECREATION_INTERVAL=60
+      - REDIS_CACHE=redis
+      - SESSIONS_SAVE_PATH=tcp://redis:6379 
+    depends_on:
+      - db
+        # networks:
+      - proxy-reverso
+
+  db:
+    image: mdillon/postgis:11
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=mapas
+      - POSTGRES_USER=mapas
+      - POSTGRES_DB=mapas
+      - POSTGRES_DB_TEST=mapasculturais_test
+        #  networks:
+        # - proxy-reverso
+    ports:
+      - "5433:5433"
+    volumes:
+      - ./compose/local/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./docker-data/db-data:/var/lib/postgresql/data
