@@ -60,14 +60,26 @@ services:
       - CACHE_API=false
       - VIRTUAL_HOST=jpcultura.joaopessoa.pb.gov.br
       - LETSENCRYPT_HOST=jpcultura.joaopessoa.pb.gov.br
-      - LETSENCRYPT_EMAIL=marcelocaldasfilho@gmail.com
- #    - REDIS_CACHE=redis
-      - SESSIONS_SAVE_PATH=tcp://redis:6379 
+      - LETSENCRYPT_EMAIL=marcelocaldasfilho@gmail.com     
 #     - APP_LCODE=pt_BR,es_ES # para selecao do idioma baseado no navegador
       - APP_LCODE=pt_BR
       - APP_MODE=production
       - ACTIVE_THEME=MapasPA
       - PENDING_PCACHE_RECREATION_INTERVAL=60
+      - REDIS_CACHE=redis
+      - SESSIONS_SAVE_PATH=tcp://redis:6379
+  redis:
+    image: redis:6
+    command: --maxmemory 256Mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+ 
+  sessions:
+    image: redis:6
+    command: --maxmemory 384Mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+    volumes:
+      - ./docker-data/sessions:/data
+
       
     depends_on:
        - db
