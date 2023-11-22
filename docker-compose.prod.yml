@@ -2,21 +2,24 @@ version: '3'
 services:
   web:
     image: hacklab/mapasculturais-nginx:v1.0
+      #image: nginx:latest
     restart: always
     volumes:
      - ./docker-data/public-files:/var/www/html/files
      - ./docker-data/assets:/var/www/html/assets
- ##### versão sem ssl
+    ##### versão sem ssl
     #  - ./compose/production/nginx.conf:/etc/nginx/conf.d/default.conf
 
   ##### versão com ssl
-    #  - ./compose/production/nginx-ssl.conf:/etc/nginx/conf.d/default.conf
+     - ./compose/production/nginx-confd.conf:/etc/nginx/conf.d/default.conf
+     - ./compose/production/arquivo_cert:/etc/nginx/conf.d/arquivo_cert
+     - ./compose/production/arquivo_key:/etc/nginx/conf.d/arquivo_key
     #  - ./docker-data/certs/conf:/etc/letsencrypt
     #  - ./docker-data/certs/www:/var/www/certbot
-     
+
     ports:
-     - "80:80"
-     - "443:443"
+     - "8080:80"
+     - "8443:443"
     environment:
      - MAPAS_HOSTNAME=mapas
     depends_on:
@@ -26,6 +29,8 @@ services:
 
 
   mapas:
+    env_file:
+      - .env
     build:
       context: ./
       dockerfile: compose/production/Dockerfile
@@ -33,10 +38,11 @@ services:
     ports:
       - "9000:9000"
     volumes:
+      - ./.env:/.env
       - ./docker-data/assets:/var/www/html/assets
       - ./docker-data/public-files:/var/www/html/files
       - ./docker-data/private-files:/var/www/private-files
-
+      - ./compose/common/lgpd-terms:/var/www/html/protected/application/conf/lgpd-terms
       - ./compose/production/config.d:/var/www/html/protected/application/conf/config.d
       - ./compose/common/config.d:/var/www/html/protected/application/conf/conf-common.d
       - ./compose/common/location.php:/var/www/html/protected/application/themes/BaseV1/layouts/parts/singles/location.php
@@ -46,16 +52,27 @@ services:
       - DB_HOST=db
       - DB_USER=mapas
       - DB_PASS=mapas
-      - DB_NAME=mapas
+      - DB_NAME=mapasJP
       - CACHE_API=false
-
-
+      - sessions
 #      - APP_LCODE=pt_BR,es_ES # para selecao do idioma baseado no navegador
       - APP_LCODE=pt_BR
       - APP_MODE=production
       - ACTIVE_THEME=MapasPA
       - PENDING_PCACHE_RECREATION_INTERVAL=60
-      
+      - REDIS_CACHE=redis
+      - SESSIONS_SAVE_PATH=tcp://redis:6379  
+  redis:
+    image: redis:6
+    command: --maxmemory 256Mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+
+  sessions:
+    image: redis:6
+    command: --maxmemory 384Mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+    volumes:
+      - ./docker-data/sessions:/data
     depends_on:
       - db
       
@@ -65,7 +82,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=mapas
       - POSTGRES_USER=mapas
-      - POSTGRES_DB=mapas
+      - POSTGRES_DB=mapasJP
       - POSTGRES_DB_TEST=mapasculturais_test
     ports:
       - "5432:5432"
