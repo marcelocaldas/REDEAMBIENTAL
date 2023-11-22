@@ -1,6 +1,6 @@
 # REDE AMBIENTAL
 
-Repositório para deploy da JP CULTURA- Copiado e adaptado do Mapa Cultural do Pará
+Repositório para deploy da REDE AMBIENTAL- Copiado e adaptado do Mapa Cultural do Pará
 
 ## Estrutura de arquivos
 - **compose**
