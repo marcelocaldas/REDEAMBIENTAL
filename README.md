@@ -1,4 +1,4 @@
-# JP CULTURA
+# REDE AMBIENTAL
 
 Repositório para deploy da JP CULTURA- Copiado e adaptado do Mapa Cultural do Pará
 
