@@ -19,8 +19,8 @@ if (env('REDIS_CACHE', false)) {
 return [
     'app.cache' => $cache,
     'app.mscache' => $mscache,
-    'app.siteName' => env('SITE_NAME', 'JP CULTURA'),
-    'app.siteDescription' => i::__("A JP CULTURA é uma plataforma colaborativa que reúne informações sobre agentes, espaços, eventos, projetos culturais e oportunidades"),
+    'app.siteName' => env('SITE_NAME', 'COLMEIA'),
+    'app.siteDescription' => i::__("A COLMEIA é uma plataforma colaborativa que reúne informações sobre agentes, espaços, eventos, projetos ambientais e oportunidades"),
 
     'themes.active' => "MapasPA",
 
